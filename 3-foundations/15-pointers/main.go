@@ -2,48 +2,21 @@ package main
 
 import "fmt"
 
-type Address struct {
-	Street string
-	Number string
-	City   string
-	State  string
-}
-
-type Client struct {
-	Name   string
-	Age    int
-	Active bool
-	Address
-}
-
-type Business struct {
-}
-
-type Deactivatable interface {
-	Disable()
-}
-
-func (c Client) Disable() {
-	c.Active = false
-	fmt.Printf("The client %s was disabled", c.Name)
-}
-
-func (b Business) Disable() {
-}
-
-func Disabling(d Deactivatable) {
-	d.Disable()
-}
+var a int = 0
 
 func main() {
-	wesley := Client{
-		Name:   "Wesley",
-		Age:    30,
-		Active: true,
-	}
+	a := 10
 
-	business := Business{}
+	fmt.Println(a)
 
-	Disabling(wesley)
-	Disabling(business)
+	var pointer *int = &a
+	*pointer = 20
+
+	fmt.Println(a)
+
+	b := &a
+
+	a = 30
+
+	fmt.Println(*b)
 }
