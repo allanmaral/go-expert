@@ -15,6 +15,7 @@ func TestCalculateTaxWithPassingAssertion(t *testing.T) {
 		t.Errorf("Expected %f, got %f instead", expected, result)
 	}
 }
+
 func TestCalculateTaxWithFailingAssertion(t *testing.T) {
 	amount := 500.0
 	expected := 1.0
