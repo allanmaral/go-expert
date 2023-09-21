@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/allanmaral/go-expert/09-apis/02-creating-configuration-file/configs"
+	"github.com/allanmaral/go-expert/09-apis/configs"
 )
 
 func main() {

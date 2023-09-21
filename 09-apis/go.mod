@@ -1,4 +1,4 @@
-module github.com/allanmaral/go-expert/09-apis/02-creating-configuration-file
+module github.com/allanmaral/go-expert/09-apis
 
 go 1.20
 
