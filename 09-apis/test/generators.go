@@ -48,3 +48,7 @@ func RandonEmail() string {
 
 	return sb.String()
 }
+
+func RandonPrice() int64 {
+	return RandonInt(1, 10000)
+}

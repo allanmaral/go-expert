@@ -8,8 +8,6 @@ import (
 )
 
 var (
-	ErrRequiredID    = errors.New("required id")
-	ErrInvalidID     = errors.New("invalid id")
 	ErrRequiredName  = errors.New("required name")
 	ErrRequiredPrice = errors.New("price is required")
 	ErrInvalidPrice  = errors.New("invalid price")
@@ -18,11 +16,11 @@ var (
 type Product struct {
 	ID        entity.ID `json:"id"`
 	Name      string    `json:"name"`
-	Price     int       `json:"price"`
+	Price     int64     `json:"price"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-func NewProduct(name string, price int) (*Product, error) {
+func NewProduct(name string, price int64) (*Product, error) {
 	if name == "" {
 		return nil, ErrRequiredName
 	}
