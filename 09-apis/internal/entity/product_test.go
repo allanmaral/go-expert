@@ -21,7 +21,7 @@ func TestNewProduct(t *testing.T) {
 }
 
 func TestNewProductShouldReturnInvalidPriceErrorOnNegativePrice(t *testing.T) {
-	tests := []int64{-1, -2, -10, -99, -100, -101, -999, -1000, -1001}
+	tests := []float64{-1, -2, -10, -99, -100, -101, -999, -1000, -1001}
 
 	for _, test := range tests {
 		p, err := NewProduct("any name", test)

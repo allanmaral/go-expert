@@ -14,13 +14,13 @@ var (
 )
 
 type Product struct {
-	ID        entity.ID `json:"id"`
-	Name      string    `json:"name"`
-	Price     int64     `json:"price"`
 	CreatedAt time.Time `json:"createdAt"`
+	Name      string    `json:"name"`
+	Price     float64   `json:"price"`
+	ID        entity.ID `json:"id"`
 }
 
-func NewProduct(name string, price int64) (*Product, error) {
+func NewProduct(name string, price float64) (*Product, error) {
 	if name == "" {
 		return nil, ErrRequiredName
 	}

@@ -19,6 +19,10 @@ func RandonInt(min, max int64) int64 {
 	return min + rand.Int63n(max-min+1)
 }
 
+func RandonFloat(min, max float64) float64 {
+	return min + rand.Float64()*(max-min)
+}
+
 func RandonString(n int) string {
 	var sb strings.Builder
 	k := len(alphabet)
@@ -49,6 +53,6 @@ func RandonEmail() string {
 	return sb.String()
 }
 
-func RandonPrice() int64 {
-	return RandonInt(1, 10000)
+func RandonPrice() float64 {
+	return RandonFloat(1, 10000)
 }
