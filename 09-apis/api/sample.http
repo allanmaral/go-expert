@@ -1,0 +1,15 @@
+# Get a product by ID
+GET http://localhost:8000/products/dfb4c665-db39-4414-aae9-b74cd890355a
+Accept: application/json
+
+# Create new product
+
+POST http://localhost:8000/products
+Content-Type: application/json
+
+{
+    "name": "My Product",
+    "price": 100
+}
+
+###
