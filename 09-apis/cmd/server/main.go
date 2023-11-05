@@ -31,6 +31,9 @@ func main() {
 	productRepository := database.NewGormProductRepository(db)
 	productHandler := handlers.NewProductHandler(productRepository)
 
+	userRepository := database.NewGormUserRepository(db)
+	userHandler := handlers.NewUsersHandler(userRepository)
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Get("/products", productHandler.GetProducts)
@@ -38,6 +41,8 @@ func main() {
 	r.Put("/products/{id}", productHandler.UpdateProduct)
 	r.Post("/products", productHandler.CreateProduct)
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
+
+	r.Post("/users", userHandler.CreateUser)
 
 	http.ListenAndServe(":8000", r)
 }
