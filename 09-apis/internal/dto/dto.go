@@ -30,3 +30,7 @@ type LoginInput struct {
 type AuthOutput struct {
 	AccessToken string `json:"access_token"`
 }
+
+type ErrorOutput struct {
+	Message string `json:"message"`
+}

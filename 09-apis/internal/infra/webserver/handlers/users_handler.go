@@ -33,7 +33,9 @@ func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var user dto.LoginInput
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: "Invalid JSON input"})
 		return
 	}
 
@@ -43,7 +45,9 @@ func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !u.ValidatePassword(user.Password) || u.ID == h.dummyUser.ID {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: "Invalid email or password"})
 		return
 	}
 
@@ -52,7 +56,9 @@ func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		"iat": time.Now().Add(time.Second * time.Duration(h.JWTExpiresIn)).Unix(),
 	})
 	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: "Failed to sign JWT"})
 		return
 	}
 
