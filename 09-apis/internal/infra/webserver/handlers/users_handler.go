@@ -53,7 +53,8 @@ func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	_, token, err := h.JWT.Encode(map[string]interface{}{
 		"sub": u.ID.String(),
-		"iat": time.Now().Add(time.Second * time.Duration(h.JWTExpiresIn)).Unix(),
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(time.Second * time.Duration(h.JWTExpiresIn)).Unix(),
 	})
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")

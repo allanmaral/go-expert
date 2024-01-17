@@ -1,28 +1,35 @@
+@token = place-token-here
+
+### Get paginated products
 GET http://localhost:8000/products?page=1&limit=5
 Accept: application/json
+Authorization: Bearer {{token}}
 
-# Get a product by ID
+### Get a product by ID
 GET http://localhost:8000/products/6dfe8a32-a01a-4bbc-99e9-db3506337db8
 Accept: application/json
+Authorization: Bearer ...
 
-# Create new product
+### Create new product
 POST http://localhost:8000/products
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "name": "My Product",
     "price": 100
 }
 
-# Update a product
+#### Update a product
 PUT http://localhost:8000/products/3bee1689-f6e9-44e2-aa44-525e147b670b
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "name": "Yet a new name",
     "price": 101.01
 }
 
-# Delete a product
+### Delete a product
 DELETE http://localhost:8000/products/3bee1689-f6e9-44e2-aa44-525e147b670b
-
+Authorization: Bearer {{token}}
