@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Product API with authentication",
+        "title": "Go Expert API Example",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Allan Ribeiro",
+            "url": "https://github.com/allanmaral",
+            "email": "allanmaralr@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://github.com/allanmaral/go-expert/LICENCE.txt"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {},
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

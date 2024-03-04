@@ -1,0 +1,21 @@
+basePath: /
+host: localhost:8000
+info:
+  contact:
+    email: allanmaralr@gmail.com
+    name: Allan Ribeiro
+    url: https://github.com/allanmaral
+  description: Product API with authentication
+  license:
+    name: MIT
+    url: https://github.com/allanmaral/go-expert/LICENCE.txt
+  termsOfService: http://swagger.io/terms/
+  title: Go Expert API Example
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
