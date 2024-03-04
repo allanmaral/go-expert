@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/allanmaral/go-expert/09-apis/configs"
@@ -37,6 +38,8 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(LogRequest)
 
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(cfg.TokenAuth))
@@ -53,4 +56,11 @@ func main() {
 	r.Post("/auth/login", userHandler.Login)
 
 	http.ListenAndServe(":8000", r)
+}
+
+func LogRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Request: %s %s", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
 }
