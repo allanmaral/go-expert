@@ -29,6 +29,17 @@ func NewUsersHandler(db database.UserRepository, jwt *jwtauth.JWTAuth, jwtexp in
 	}
 }
 
+// Login godoc
+// @Summary		Login and generate a JWT
+// @Description	Login and generate a JWT
+// @Tags		users
+// @Accept		json
+// @Produce		json
+// @Param		request		body		dto.LoginInput	true	"user credentials"
+// @Success		200			{object}	dto.AuthOutput
+// @Failure		401			{object}	dto.ErrorOutput
+// @Failure		500			{object}	dto.ErrorOutput
+// @Router		/auth/login [post]
 func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var user dto.LoginInput
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -70,25 +81,38 @@ func (h *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(o)
 }
 
+// Create user godoc
+// @Summary		Create user
+// @Description Create user
+// @Tags		users
+// @Accept		json
+// @Produce		json
+// @Param		request	body		dto.CreateUserInput		true	"user request"
+// @Success		201
+// @Failure		500		{object}	dto.ErrorOutput
+// @Router		/users [post]
 func (h *UsersHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user dto.CreateUserInput
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: err.Error()})
 		return
 	}
 
 	u, err := entity.NewUser(user.Name, user.Email, user.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: err.Error()})
 		return
 	}
 
 	err = h.UserRepository.Create(u)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(dto.ErrorOutput{Message: err.Error()})
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusCreated)
 }
