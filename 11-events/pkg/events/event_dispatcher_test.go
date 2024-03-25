@@ -31,8 +31,7 @@ func (e *event) GetPayload() interface{} {
 	return e.Payload
 }
 
-func (h *eventHandler) Handle(event events.Event) {
-}
+func (h *eventHandler) Handle(event events.Event) {}
 
 func TestEventDispatcher_Register(t *testing.T) {
 	t.Run("add handler when handler not already registered", func(t *testing.T) {
@@ -83,6 +82,54 @@ func TestEventDispatcher_Clear(t *testing.T) {
 		hasHandler := dispatcher.Has(eventName, &handler)
 		if hasHandler {
 			t.Error("expected event handler to be cleared")
+		}
+	})
+}
+
+func TestEventDispatcher_Has(t *testing.T) {
+	t.Run("return false when there are no handlers registered", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+
+		hasHandler := dispatcher.Has("anyEvent", &handler)
+
+		if hasHandler {
+			t.Error("expected dispatcher to have no handler")
+		}
+	})
+	t.Run("return false when called with a different event name", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		dispatcher.Register("aSpecificEventName", &handler)
+
+		hasHandler := dispatcher.Has("anotherEventName", &handler)
+
+		if hasHandler {
+			t.Error("expect dispatcher not to have handlers for \"anotherEventName\"")
+		}
+	})
+	t.Run("return false when called with a different handler", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		registeredHandler := eventHandler{}
+		unregisteredHandler := eventHandler{}
+		dispatcher.Register("aSpecificEventName", &registeredHandler)
+
+		hasHandler := dispatcher.Has("anotherEventName", &unregisteredHandler)
+
+		if hasHandler {
+			t.Error("expected only one handler to be registered")
+		}
+	})
+	t.Run("return true when there is a handler registered with the same event name", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		eventName := "anotherSpecificEventName"
+		dispatcher.Register(eventName, &handler)
+
+		hasHandler := dispatcher.Has(eventName, &handler)
+
+		if !hasHandler {
+			t.Error("expected handler to be registered")
 		}
 	})
 }
