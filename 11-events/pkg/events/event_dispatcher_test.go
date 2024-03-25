@@ -34,7 +34,7 @@ func (e *event) GetPayload() interface{} {
 func (h *eventHandler) Handle(event events.Event) {
 }
 
-func TestRegister(t *testing.T) {
+func TestEventDispatcher_Register(t *testing.T) {
 	t.Run("add handler when handler not already registered", func(t *testing.T) {
 		dispatcher := events.NewEventDispatcher()
 		handler := eventHandler{}
@@ -68,6 +68,22 @@ func TestRegister(t *testing.T) {
 		err := dispatcher.Register(eventName, &handler)
 
 		assertCorrectError(t, err, events.ErrHandlerAlreadyRegistered)
+	})
+}
+
+func TestEventDispatcher_Clear(t *testing.T) {
+	t.Run("remove handler when handler are present", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		eventName := "anyEventName"
+		_ = dispatcher.Register(eventName, &handler)
+
+		dispatcher.Clear()
+
+		hasHandler := dispatcher.Has(eventName, &handler)
+		if hasHandler {
+			t.Error("expected event handler to be cleared")
+		}
 	})
 }
 

@@ -19,5 +19,5 @@ type EventDispatcher interface {
 	Unregister(eventName string, handler EventHandler) error
 	Has(eventName string, handler EventHandler) bool
 	Dispatch(event Event) error
-	Clear() error
+	Clear()
 }

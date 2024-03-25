@@ -50,6 +50,6 @@ func (ed *eventDispatcher) Dispatch(event Event) error {
 	return nil
 }
 
-func (ed *eventDispatcher) Clear() error {
-	return nil
+func (ed *eventDispatcher) Clear() {
+	ed.handlers = make(map[string][]EventHandler)
 }
