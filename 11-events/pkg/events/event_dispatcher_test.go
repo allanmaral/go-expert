@@ -1,6 +1,7 @@
 package events_test
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
@@ -13,7 +14,8 @@ type event struct {
 }
 
 type eventHandler struct {
-	ID int
+	ID    int
+	Calls []events.Event
 }
 
 var _ events.Event = (*event)(nil)
@@ -31,7 +33,13 @@ func (e *event) GetPayload() interface{} {
 	return e.Payload
 }
 
-func (h *eventHandler) Handle(event events.Event) {}
+func (h *eventHandler) Handle(event events.Event) {
+	if h.Calls == nil {
+		h.Calls = make([]events.Event, 0)
+	}
+
+	h.Calls = append(h.Calls, event)
+}
 
 func TestEventDispatcher_Register(t *testing.T) {
 	t.Run("add handler when handler not already registered", func(t *testing.T) {
@@ -130,6 +138,38 @@ func TestEventDispatcher_Has(t *testing.T) {
 
 		if !hasHandler {
 			t.Error("expected handler to be registered")
+		}
+	})
+}
+
+func TestEventDispatcher_Dispatch(t *testing.T) {
+	t.Run("call registered exatcly one time when the event name matches", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		eventName := "specificEventName"
+		dispatcher.Register(eventName, &handler)
+		sentEvent := event{Name: eventName}
+
+		dispatcher.Dispatch(&sentEvent)
+
+		expectedCalls := []events.Event{&sentEvent}
+		if !reflect.DeepEqual(expectedCalls, handler.Calls) {
+			t.Errorf("expected handler to have been called with event %v, got %v instead", sentEvent, handler.Calls)
+		}
+	})
+
+	t.Run("do not call registered handlers when event name do not match", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		registeredEventName := "registeredEventName"
+		unregisteredEventName := "unregisteredEventName"
+		dispatcher.Register(registeredEventName, &handler)
+		sentEvent := event{Name: unregisteredEventName}
+
+		dispatcher.Dispatch(&sentEvent)
+
+		if len(handler.Calls) != 0 {
+			t.Error("expected handler not to have been called")
 		}
 	})
 }
