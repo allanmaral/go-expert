@@ -2,6 +2,7 @@ package events_test
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -33,12 +34,13 @@ func (e *event) GetPayload() interface{} {
 	return e.Payload
 }
 
-func (h *eventHandler) Handle(event events.Event) {
+func (h *eventHandler) Handle(event events.Event, wg *sync.WaitGroup) {
 	if h.Calls == nil {
 		h.Calls = make([]events.Event, 0)
 	}
 
 	h.Calls = append(h.Calls, event)
+	wg.Done()
 }
 
 func TestEventDispatcher_Register(t *testing.T) {
