@@ -50,7 +50,7 @@ func TestEventDispatcher_Register(t *testing.T) {
 		err := dispatcher.Register(eventName, &handler)
 
 		assertNilError(t, err)
-		assertDispatcherHasHandler(t, dispatcher, eventName, &handler)
+		assertHasHandler(t, dispatcher, eventName, &handler, "expected dispatcher to have registered handler")
 	})
 	t.Run("register multiple handlers when registering different handlers for the same event name", func(t *testing.T) {
 		dispatcher := events.NewEventDispatcher()
@@ -63,8 +63,8 @@ func TestEventDispatcher_Register(t *testing.T) {
 
 		assertNilError(t, err1)
 		assertNilError(t, err2)
-		assertDispatcherHasHandler(t, dispatcher, eventName, &firstHandler)
-		assertDispatcherHasHandler(t, dispatcher, eventName, &firstHandler)
+		assertHasHandler(t, dispatcher, eventName, &firstHandler, "expected first handler to be registered")
+		assertHasHandler(t, dispatcher, eventName, &secondHandler, "expected second handler to be registered")
 	})
 	t.Run("returns error when registering handler twice", func(t *testing.T) {
 		dispatcher := events.NewEventDispatcher()
@@ -174,10 +174,48 @@ func TestEventDispatcher_Dispatch(t *testing.T) {
 	})
 }
 
-func assertDispatcherHasHandler(t testing.TB, dispatcher events.EventDispatcher, eventName string, handler events.EventHandler) {
+func TestEventDispatcher_Unregister(t *testing.T) {
+	t.Run("remove handler when handler is registered in the matching event name", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		handler := eventHandler{}
+		eventName := "sampleEventName"
+		dispatcher.Register(eventName, &handler)
+
+		dispatcher.Unregister(eventName, &handler)
+
+		hasHandler := dispatcher.Has(eventName, &handler)
+		if hasHandler {
+			t.Error("expected handler to have been removed")
+		}
+	})
+	t.Run("do not remove other handlers registered on the same event name when handler is registed in the matching event name", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		unrelatedHandler := eventHandler{}
+		handlerToRemove := eventHandler{}
+		eventName := "aSpecificEventName"
+		dispatcher.Register(eventName, &unrelatedHandler)
+		dispatcher.Register(eventName, &handlerToRemove)
+
+		err := dispatcher.Unregister(eventName, &handlerToRemove)
+
+		assertNilError(t, err)
+		assertHasHandler(t, dispatcher, eventName, &unrelatedHandler, "expected to not remove unrelated handlers registered in the same event name")
+	})
+	t.Run("returns error when event name dot not have matching handler registered", func(t *testing.T) {
+		dispatcher := events.NewEventDispatcher()
+		unregisteredHandler := eventHandler{}
+		eventName := "aEventName"
+
+		err := dispatcher.Unregister(eventName, &unregisteredHandler)
+
+		assertCorrectError(t, err, events.ErrHandlerNotFound)
+	})
+}
+
+func assertHasHandler(t testing.TB, dispatcher events.EventDispatcher, eventName string, handler events.EventHandler, msg string) {
 	t.Helper()
 	if !dispatcher.Has(eventName, handler) {
-		t.Errorf("expected dispatcher to have registered handler")
+		t.Error(msg)
 	}
 }
 

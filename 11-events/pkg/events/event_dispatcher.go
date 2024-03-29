@@ -5,6 +5,7 @@ import (
 )
 
 var ErrHandlerAlreadyRegistered = errors.New("handler already registered")
+var ErrHandlerNotFound = errors.New("handler not found")
 
 type eventDispatcher struct {
 	handlers map[string][]EventHandler
@@ -34,7 +35,16 @@ func (ed *eventDispatcher) Register(eventName string, handler EventHandler) erro
 }
 
 func (ed *eventDispatcher) Unregister(eventName string, handler EventHandler) error {
-	return nil
+	if handlers, ok := ed.handlers[eventName]; ok {
+		for i, h := range handlers {
+			if h == handler {
+				ed.handlers[eventName] = append(handlers[:i], handlers[i+1:]...)
+				return nil
+			}
+		}
+	}
+
+	return ErrHandlerNotFound
 }
 
 func (ed *eventDispatcher) Has(eventName string, handler EventHandler) bool {
