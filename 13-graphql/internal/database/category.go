@@ -31,6 +31,21 @@ func (c *Category) Create(name string, description string) (*Category, error) {
 	}, nil
 }
 
+func (c *Category) FindByCourseID(courseID string) (*Category, error) {
+	row := c.db.QueryRow("SELECT ca.id, ca.name, ca.description FROM categories ca JOIN courses co ON co.category_id = ca.id WHERE co.id = $1", courseID)
+
+	var id, name, description string
+	if err := row.Scan(&id, &name, &description); err != nil {
+		return nil, err
+	}
+
+	return &Category{
+		ID:          id,
+		Name:        name,
+		Description: description,
+	}, nil
+}
+
 func (c *Category) FindAll() ([]Category, error) {
 	rows, err := c.db.Query("SELECT id, name, description FROM categories")
 	if err != nil {
