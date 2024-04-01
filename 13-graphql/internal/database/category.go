@@ -24,7 +24,11 @@ func (c *Category) Create(name string, description string) (*Category, error) {
 		return nil, err
 	}
 
-	return &Category{ID: id, Name: name, Description: description}, nil
+	return &Category{
+		ID:          id,
+		Name:        name,
+		Description: description,
+	}, nil
 }
 
 func (c *Category) FindAll() ([]Category, error) {
