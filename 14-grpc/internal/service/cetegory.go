@@ -9,12 +9,12 @@ import (
 
 type CategoryService struct {
 	pb.UnimplementedCategoryServiceServer
-	CategoryDB database.Category
+	CategoryDB *database.Category
 }
 
 var _ (pb.CategoryServiceServer) = (*CategoryService)(nil)
 
-func NewCategoryService(categoryDB database.Category) *CategoryService {
+func NewCategoryService(categoryDB *database.Category) *CategoryService {
 	return &CategoryService{
 		CategoryDB: categoryDB,
 	}
@@ -33,5 +33,4 @@ func (cs *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCate
 			Description: category.Description,
 		},
 	}, nil
-
 }
