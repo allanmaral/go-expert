@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	"github.com/allanmaral/go-expert/17-sqlc/internal/db"
-	"github.com/google/uuid"
-	// "github.com/google/uuid"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -67,23 +65,34 @@ func main() {
 	}
 	defer conn.Close()
 
-	categoryParams := db.CreateCategoryParams{
-		ID:          uuid.New().String(),
-		Name:        "Backend",
-		Description: sql.NullString{String: "Backend Course", Valid: true},
-	}
+	q := db.New(conn)
 
-	courseParams := db.CreateCourseParams{
-		ID:          uuid.New().String(),
-		Name:        "Go",
-		Description: "Go Course",
-		Price:       10.95,
-	}
-
-	courseAR := NewCourseAR(conn)
-	err = courseAR.CreateCourseAndCategory(ctx, categoryParams, courseParams)
+	courses, err := q.ListCourses(ctx)
 	if err != nil {
 		panic(err)
 	}
+
+	for _, course := range courses {
+		fmt.Printf("ID: %s, Name: %s, Description: %s, Price: %f, Category: %s\n", course.ID, course.Name, course.Description, course.Price, course.CategoryName)
+	}
+
+	// categoryParams := db.CreateCategoryParams{
+	// 	ID:          uuid.New().String(),
+	// 	Name:        "Backend",
+	// 	Description: sql.NullString{String: "Backend Course", Valid: true},
+	// }
+	//
+	// courseParams := db.CreateCourseParams{
+	// 	ID:          uuid.New().String(),
+	// 	Name:        "Go",
+	// 	Description: "Go Course",
+	// 	Price:       10.95,
+	// }
+	//
+	// courseAR := NewCourseAR(conn)
+	// err = courseAR.CreateCourseAndCategory(ctx, categoryParams, courseParams)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 }
