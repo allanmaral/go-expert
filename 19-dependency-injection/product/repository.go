@@ -2,15 +2,33 @@ package product
 
 import "database/sql"
 
-type ProductRepository struct {
+type ProductRepository interface {
+	GetProduct(int) (Product, error)
+}
+
+type ProductRepositorySQL struct {
 	db *sql.DB
 }
 
-func NewProductRepository(db *sql.DB) *ProductRepository {
-	return &ProductRepository{db}
+func NewProductRepositorySQL(db *sql.DB) *ProductRepositorySQL {
+	return &ProductRepositorySQL{db}
 }
 
-func (r *ProductRepository) GetProduct(id int) (Product, error) {
+func (r *ProductRepositorySQL) GetProduct(id int) (Product, error) {
+	return Product{
+		ID:   id,
+		Name: "Product Name",
+	}, nil
+}
+
+type ProductRepositoryTXT struct {
+}
+
+func NewProductRepositoryTXT(db *sql.DB) *ProductRepositoryTXT {
+	return &ProductRepositoryTXT{}
+}
+
+func (r *ProductRepositoryTXT) GetProduct(id int) (Product, error) {
 	return Product{
 		ID:   id,
 		Name: "Product Name",
